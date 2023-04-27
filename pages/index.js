@@ -28,6 +28,13 @@ export default function Home() {
           findLocalStoreButtonText={"View stores nearby"}
           handleOnClick={handleOnBannerButtonClick}
         />
+        <Image
+          src='/static/hero-image.png'
+          alt='hero image'
+          width={700}
+          height={400}
+          className={styles.heroImage}
+        />
       </main>
     </>
   );

@@ -21,6 +21,7 @@ body {
   background-size: cover;
   color: #373b64;
   height: 100%;
+  max-width: 100%;
 }
 
 a {
