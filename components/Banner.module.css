@@ -1,8 +1,6 @@
 /** By default, this is a mobile breakpoint **/
 .container {
-  margin-bottom: 6rem;
-  position: relative;
-  z-index: 2;
+  margin-bottom: 1rem;
 }
 
 .title {
@@ -19,7 +17,7 @@
 }
 
 .title2 {
-  display: inline;
+  display: block;
   color: var(--text-purple);
 }
 
@@ -48,6 +46,7 @@
   line-height: 1.75rem /* 28px */;
   padding-left: 2.5rem /* 40px */;
   padding-right: 2.5rem /* 40px */;
+  margin-top: 1.25rem;
 }
 
 .button:hover {
@@ -55,20 +54,24 @@
 }
 
 /** 
-    Breakpoints:
-    ------------
-    sm: min-width: 640px; //small device
-    md: min-width: 768px; // medium device
-    lg: min-width: 1024px; // large device
-    xl: min-width: 1280px; // extra large device
-    2xl: min-width: 1536px; // 2 x extra large device
-  **/
+  Breakpoints:
+  ------------
+  sm: min-width: 640px; //small device
+  md: min-width: 768px; // medium device
+  lg: min-width: 1024px; // large device
+  xl: min-width: 1280px; // extra large device
+  2xl: min-width: 1536px; // 2 x extra large device
+**/
 
 /** sm breakpoint **/
 @media (min-width: 640px) {
   .title {
     font-size: 3rem /* 48px */;
     line-height: 1;
+  }
+
+  .title2 {
+    display: inline;
   }
 
   .subTitle {
@@ -87,6 +90,10 @@
   .title {
     font-size: 3.75rem /* 60px */;
     line-height: 1;
+  }
+
+  .title2 {
+    display: inline;
   }
 
   .subTitle {
@@ -116,6 +123,7 @@
 
   .title2 {
     padding-left: 0.5rem;
+    display: inline;
   }
 
   .subTitle {
