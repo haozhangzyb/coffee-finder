@@ -4,7 +4,17 @@ import styles from "@/styles/Home.module.css";
 import Banner from "@/components/Banner";
 import Card from "@/components/Card";
 
-export default function Home() {
+import localCoffeeStoreData from "../data/coffee-stores.json";
+
+export async function getStaticProps() {
+  return {
+    props: {
+      coffeeStoreData: localCoffeeStoreData,
+    },
+  };
+}
+
+export default function Home({ coffeeStoreData }) {
   const handleOnBannerButtonClick = () => {
     console.log("Banner button clicked");
   };
@@ -33,44 +43,21 @@ export default function Home() {
           height={400}
           className={styles.heroImage}
         />
-        <div className={styles.cardLayout}>
-          <Card
-            storeName={"TestStore"}
-            storeImg={"/static/hero-image.png"}
-            storeId={"TestStore"}
-            className={styles.card}
-          />
-          <Card
-            storeName={"TestStore"}
-            storeImg={"/static/hero-image.png"}
-            storeId={"TestStore"}
-            className={styles.card}
-          />
-          <Card
-            storeName={"TestStore"}
-            storeImg={"/static/hero-image.png"}
-            storeId={"TestStore"}
-            className={styles.card}
-          />
-          <Card
-            storeName={"TestStore"}
-            storeImg={"/static/hero-image.png"}
-            storeId={"TestStore"}
-            className={styles.card}
-          />
-          <Card
-            storeName={"TestStore"}
-            storeImg={"/static/hero-image.png"}
-            storeId={"TestStore"}
-            className={styles.card}
-          />
-          <Card
-            storeName={"TestStore"}
-            storeImg={"/static/hero-image.png"}
-            storeId={"TestStore"}
-            className={styles.card}
-          />
-        </div>
+        {coffeeStoreData.length > 0 && (
+          <>
+            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <div className={styles.cardLayout}>
+              {coffeeStoreData.map((store) => (
+                <Card
+                  key={store.id}
+                  storeName={store.name}
+                  storeImg={store.imgUrl}
+                  storeId={store.id}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </main>
     </>
   );
