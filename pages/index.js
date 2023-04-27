@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Home.module.css";
 import Banner from "@/components/Banner";
+import Card from "@/components/Card";
 
 export default function Home() {
   const handleOnBannerButtonClick = () => {
@@ -32,6 +33,44 @@ export default function Home() {
           height={400}
           className={styles.heroImage}
         />
+        <div className={styles.cardLayout}>
+          <Card
+            storeName={"TestStore"}
+            storeImg={"/static/hero-image.png"}
+            storeId={"TestStore"}
+            className={styles.card}
+          />
+          <Card
+            storeName={"TestStore"}
+            storeImg={"/static/hero-image.png"}
+            storeId={"TestStore"}
+            className={styles.card}
+          />
+          <Card
+            storeName={"TestStore"}
+            storeImg={"/static/hero-image.png"}
+            storeId={"TestStore"}
+            className={styles.card}
+          />
+          <Card
+            storeName={"TestStore"}
+            storeImg={"/static/hero-image.png"}
+            storeId={"TestStore"}
+            className={styles.card}
+          />
+          <Card
+            storeName={"TestStore"}
+            storeImg={"/static/hero-image.png"}
+            storeId={"TestStore"}
+            className={styles.card}
+          />
+          <Card
+            storeName={"TestStore"}
+            storeImg={"/static/hero-image.png"}
+            storeId={"TestStore"}
+            className={styles.card}
+          />
+        </div>
       </main>
     </>
   );

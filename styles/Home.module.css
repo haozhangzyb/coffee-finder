@@ -19,6 +19,16 @@
   z-index: 1;
 }
 
+.cardLayout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-gap: 1.5rem;
+}
+
+.card {
+  justify-content: center;
+}
+
 /** Breakpoints:
   sm: min-width: 640px;
   md: min-width: 768px;
