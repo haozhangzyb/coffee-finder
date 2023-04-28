@@ -11,6 +11,8 @@
   max-width: 72rem /* 1152px */;
   padding-left: 1rem /* 16px */;
   padding-right: 1rem /* 16px */;
+
+  margin-bottom: 14rem /* 224px */;
 }
 
 .heroImage {

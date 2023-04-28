@@ -36,13 +36,14 @@ export default function Home({ coffeeStoreData }) {
           findLocalStoreButtonText={"View stores nearby"}
           handleOnClick={handleOnBannerButtonClick}
         />
-        <Image
-          src='/static/hero-image.png'
-          alt='hero image'
-          width={700}
-          height={400}
-          className={styles.heroImage}
-        />
+        <div className={styles.heroImage}>
+          <Image
+            src='/static/hero-image.png'
+            alt='hero image'
+            width={700}
+            height={400}
+          />
+        </div>
         {coffeeStoreData.length > 0 && (
           <>
             <h2 className={styles.heading2}>Toronto Stores</h2>
