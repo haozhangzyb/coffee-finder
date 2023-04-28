@@ -52,7 +52,7 @@ export default function Home({ coffeeStoreData }) {
                   key={store.id}
                   storeName={store.name}
                   storeImg={store.imgUrl}
-                  storeId={store.id}
+                  id={store.id}
                 />
               ))}
             </div>
