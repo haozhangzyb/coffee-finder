@@ -15,10 +15,10 @@
 }
 
 .backToHomeLink {
-  margin-top: 6rem /* 96px */;
+  margin-top: 4rem;
   font-size: 1.125rem /* 18px */;
   line-height: 1.75rem /* 28px */;
-  margin-bottom: 0.5rem /* 8px */;
+  margin-bottom: 2rem /* 8px */;
   font-weight: 700;
 }
 
@@ -52,6 +52,7 @@
   height: auto;
   vertical-align: middle;
   border-style: none;
+  max-height: 400px;
 }
 
 .col2 {
@@ -109,7 +110,7 @@
   .layout {
     padding-left: 2.5rem /* 40px */;
     padding-right: 2.5rem /* 40px */;
-    height: 100vh;
+    /* height: 100vh; */
   }
 
   .col2 {
