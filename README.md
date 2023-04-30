@@ -1,10 +1,26 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This is a web app that can help you find your local coffee stores. This app is created to demo pre-fetching feature of Next.js
+# Coffee finder
+
+This is a web app that can help you find your local coffee stores based on your location. This app is created to demo pre-fetching feature of Next.js
+
+## Features
+
+- Different rendering methods:
+  - **Static Site Generation (SSR)**
+    for stores near pre-defined location (NYC)
+  - **Statically Generated Dynamic Routes**
+    for stores near pre-defined location (NYC).
+  - **Client-side rendering (CSR)**
+    for stores near user's location, SSR will fallback and coffee store info will be fetched on the client side
+- React `context`
+  - use `StoreContext` to store user's location and stores info
+- Customized React hooks
+  - `useGetLocation` to use `navigator.geolocation` to get user location.
 
 ## Environment Variables
 
-For this app to work, you need to configure the following environment variables in your .env.local file so please create a .env.local file in the root of this project right:
+For this app to work, you need to configure the following environment variables in your .env.local file so please create a .env.local file in the root of this project:
 
 ```
 NEXT_PUBLIC_FOURSQUARE_API_KEY=<value>
