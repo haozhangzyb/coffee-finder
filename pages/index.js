@@ -6,6 +6,8 @@ import Card from "@/components/Card";
 
 import localCoffeeStoreData from "../data/coffee-stores.json";
 import { fetchCoffeeStores } from "@/lib/fetchCoffeeStores";
+import useGetLocation from "@/hooks/useGetLocation";
+import { useEffect, useState } from "react";
 
 export async function getStaticProps() {
   const coffeeStoreData = await fetchCoffeeStores();
@@ -18,9 +20,18 @@ export async function getStaticProps() {
 }
 
 export default function Home({ coffeeStoreData }) {
-  const handleOnBannerButtonClick = () => {
-    console.log("Banner button clicked");
-  };
+  const { latitude, longitude, locationError, isLoading, getLocation } =
+    useGetLocation();
+
+  const [nearbyStores, setNearbyStores] = useState([]);
+
+  useEffect(() => {
+    if (latitude !== "" && longitude !== "") {
+      fetchCoffeeStores(latitude, longitude)
+        .then(setNearbyStores)
+        .catch(console.error);
+    }
+  }, [latitude, longitude]);
 
   return (
     <>
@@ -35,10 +46,18 @@ export default function Home({ coffeeStoreData }) {
       </Head>
 
       <main className={styles.main}>
-        <Banner
-          findLocalStoreButtonText={"View stores nearby"}
-          handleOnClick={handleOnBannerButtonClick}
-        />
+        <div className={styles.banner_wrapper}>
+          <Banner
+            findLocalStoreButtonText={"View stores nearby"}
+            handleOnClick={getLocation}
+            isLoading={isLoading}
+          />
+          {locationError !== "" && (
+            <p className={styles.locationError}>
+              Something went wrong: {locationError}
+            </p>
+          )}
+        </div>
         <div className={styles.heroImage}>
           <Image
             src='/static/hero-image.png'
@@ -47,9 +66,29 @@ export default function Home({ coffeeStoreData }) {
             height={400}
           />
         </div>
+
+        {nearbyStores.length > 0 && (
+          <>
+            <h2 className={styles.heading2}>Stores near me</h2>
+            <div className={styles.cardLayout}>
+              {nearbyStores.map((store) => (
+                <Card
+                  key={store.fsq_id}
+                  storeName={store.name}
+                  storeImg={
+                    store.img_url ||
+                    "https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
+                  }
+                  id={store.fsq_id}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         {coffeeStoreData.length > 0 && (
           <>
-            <h2 className={styles.heading2}>Toronto Stores</h2>
+            <h2 className={styles.heading2}>NYC Stores</h2>
             <div className={styles.cardLayout}>
               {coffeeStoreData.map((store) => (
                 <Card
