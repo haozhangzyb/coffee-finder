@@ -27,8 +27,12 @@ export default function Home({ coffeeStores }) {
 
   const { locationError, isLoading, getLocation } = useGetLocation();
 
+  const [isNearbyStoresLoading, setIsNearbyStoresLoading] =
+    useState(false);
+
   useEffect(() => {
     if (latitude !== "" && longitude !== "") {
+      setIsNearbyStoresLoading(true);
       fetchCoffeeStores(latitude, longitude)
         .then((data) => {
           dispatch({
@@ -38,7 +42,10 @@ export default function Home({ coffeeStores }) {
             },
           });
         })
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => {
+          setIsNearbyStoresLoading(false);
+        });
     }
   }, [latitude, longitude]);
 
@@ -59,7 +66,7 @@ export default function Home({ coffeeStores }) {
           <Banner
             findLocalStoreButtonText={"View stores nearby"}
             handleOnClick={getLocation}
-            isLoading={isLoading}
+            isLoading={isLoading || isNearbyStoresLoading}
           />
           {locationError !== "" && (
             <p className={styles.locationError}>
