@@ -1,23 +1,34 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import cls from "classnames";
 
 import localCoffeeStoreData from "../../data/coffee-stores.json";
 
 import styles from "../../styles/CoffeeStore.module.css";
 import Image from "next/image";
-import { fetchCoffeeStores } from "@/lib/fetchCoffeeStores";
+import {
+  fetchCoffeeStoreById,
+  fetchCoffeeStores,
+} from "@/lib/fetchCoffeeStores";
+import { StoreContext } from "@/contexts/StoreContext";
 
 export async function getStaticProps({ params }) {
   const coffeeStoreData = await fetchCoffeeStores();
 
+  let coffeeStore = coffeeStoreData.find(
+    (store) => store.fsq_id === params.id
+  );
+
+  // SSR fallback
+  // if (!coffeeStore) {
+  //   coffeeStore = await fetchCoffeeStoreById(params.id);
+  // }
+
   return {
     props: {
-      coffeeStore: coffeeStoreData.find(
-        (store) => store.fsq_id === params.id
-      ),
+      coffeeStore,
     },
   };
 }
@@ -35,9 +46,24 @@ export async function getStaticPaths() {
   };
 }
 
-const CoffeeStore = ({ coffeeStore }) => {
+const CoffeeStore = (props) => {
   const router = useRouter();
   const { id } = router.query;
+
+  const { state } = useContext(StoreContext);
+
+  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
+
+  // csr fallback
+  useEffect(() => {
+    const isPropsEmpty = Object.keys(props.coffeeStore).length === 0;
+
+    if (isPropsEmpty) {
+      setCoffeeStore(
+        state.nearbyStores.find((store) => store.fsq_id === id)
+      );
+    }
+  }, [id]);
 
   if (router.isFallback) {
     return <div>Loading...</div>;
