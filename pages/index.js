@@ -7,28 +7,37 @@ import Card from "@/components/Card";
 import localCoffeeStoreData from "../data/coffee-stores.json";
 import { fetchCoffeeStores } from "@/lib/fetchCoffeeStores";
 import useGetLocation from "@/hooks/useGetLocation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ACTION_TYPES, StoreContext } from "@/contexts/StoreContext";
 
 export async function getStaticProps() {
-  const coffeeStoreData = await fetchCoffeeStores();
+  const coffeeStores = await fetchCoffeeStores();
 
   return {
     props: {
-      coffeeStoreData,
+      coffeeStores,
     },
   };
 }
 
-export default function Home({ coffeeStoreData }) {
-  const { latitude, longitude, locationError, isLoading, getLocation } =
-    useGetLocation();
+export default function Home({ coffeeStores }) {
+  const { state, dispatch } = useContext(StoreContext);
 
-  const [nearbyStores, setNearbyStores] = useState([]);
+  const { nearbyStores, latitude, longitude } = state;
+
+  const { locationError, isLoading, getLocation } = useGetLocation();
 
   useEffect(() => {
     if (latitude !== "" && longitude !== "") {
       fetchCoffeeStores(latitude, longitude)
-        .then(setNearbyStores)
+        .then((data) => {
+          dispatch({
+            type: ACTION_TYPES.SET_STORES,
+            payload: {
+              nearbyStores: data,
+            },
+          });
+        })
         .catch(console.error);
     }
   }, [latitude, longitude]);
@@ -86,11 +95,11 @@ export default function Home({ coffeeStoreData }) {
           </>
         )}
 
-        {coffeeStoreData.length > 0 && (
+        {coffeeStores.length > 0 && (
           <>
             <h2 className={styles.heading2}>NYC Stores</h2>
             <div className={styles.cardLayout}>
-              {coffeeStoreData.map((store) => (
+              {coffeeStores.map((store) => (
                 <Card
                   key={store.fsq_id}
                   storeName={store.name}
