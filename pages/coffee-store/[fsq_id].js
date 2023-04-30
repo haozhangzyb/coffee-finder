@@ -18,10 +18,14 @@ export async function getStaticProps({ params }) {
   const coffeeStoreData = await fetchCoffeeStores();
 
   let coffeeStore = coffeeStoreData.find(
-    (store) => store.fsq_id === params.id
+    (store) => store.fsq_id === params.fsq_id
   );
 
-  // SSR fallback
+  if (!coffeeStore) {
+    coffeeStore = {};
+  }
+
+  // SSR
   // if (!coffeeStore) {
   //   coffeeStore = await fetchCoffeeStoreById(params.id);
   // }
@@ -39,7 +43,7 @@ export async function getStaticPaths() {
   return {
     paths: coffeeStoreData.map((store) => ({
       params: {
-        id: store.fsq_id,
+        fsq_id: store.fsq_id,
       },
     })),
     fallback: true,
@@ -48,24 +52,37 @@ export async function getStaticPaths() {
 
 const CoffeeStore = (props) => {
   const router = useRouter();
-  const { id } = router.query;
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+  const { fsq_id } = router.query;
 
   const { state } = useContext(StoreContext);
 
   const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
 
+  const isCoffeeStoreEmpty =
+    coffeeStore === undefined || Object.keys(coffeeStore).length === 0;
+
   // csr fallback
   useEffect(() => {
-    const isPropsEmpty = Object.keys(props.coffeeStore).length === 0;
+    console.log(
+      "useEffect",
+      fsq_id,
+      props.coffeeStore,
+      state.nearbyStores
+    );
 
-    if (isPropsEmpty) {
+    if (isCoffeeStoreEmpty) {
+      console.log("empty props.coffeeStore");
+
       setCoffeeStore(
-        state.nearbyStores.find((store) => store.fsq_id === id)
+        state.nearbyStores.find((store) => store.fsq_id === fsq_id)
       );
     }
-  }, [id]);
+  }, [fsq_id]);
 
-  if (router.isFallback) {
+  if (isCoffeeStoreEmpty) {
     return <div>Loading...</div>;
   }
 
