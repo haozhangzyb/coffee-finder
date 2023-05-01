@@ -22,9 +22,9 @@ export default async function createCoffeeStore(req, res) {
       return res.status(200).json(findCoffeeStore[0].fields);
     }
 
-    if (!fsq_id || !name || !address || !city) {
-      return res.status(400).json({ error: "Please fill in all fields" });
-    }
+    // if (!fsq_id || !name || !address || !city) {
+    //   return res.status(400).json({ error: "Please fill in all fields" });
+    // }
 
     const createdCoffeeStore = await table.create([
       {

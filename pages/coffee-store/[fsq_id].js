@@ -64,29 +64,67 @@ const CoffeeStore = (props) => {
   const isCoffeeStoreEmpty =
     coffeeStore === undefined || Object.keys(coffeeStore).length === 0;
 
+  const handleGetCoffeeStoreVotes = async () => {
+    try {
+      const res = await fetch("/api/createCoffeeStore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fsq_id }),
+      });
+
+      const data = await res.json();
+      return data.votes;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   // csr fallback
   useEffect(() => {
-    console.log(
-      "useEffect",
-      fsq_id,
-      props.coffeeStore,
-      state.nearbyStores
-    );
+    async function fetchCoffeeStoreWithVotes() {
+      const votes = await handleGetCoffeeStoreVotes(fsq_id);
 
-    if (isCoffeeStoreEmpty) {
-      console.log("empty props.coffeeStore");
+      // staticProps does not have this store
+      if (isCoffeeStoreEmpty) {
+        const coffeeStoreFromContext = state.nearbyStores.find(
+          (store) => store.fsq_id === fsq_id
+        );
 
-      setCoffeeStore(
-        state.nearbyStores.find((store) => store.fsq_id === fsq_id)
-      );
+        // if store is in context, use that
+        if (coffeeStoreFromContext) {
+          setCoffeeStore({
+            ...coffeeStoreFromContext,
+            votes,
+          });
+        }
+        // TODO: this causes bug: if store is not in context, fetch it
+        else {
+          const coffeeStoreById = await fetchCoffeeStoreById(fsq_id);
+          setCoffeeStore({
+            ...coffeeStoreById,
+            votes,
+          });
+        }
+      }
+      // staticProps has this store, we can use that
+      else {
+        setCoffeeStore({
+          ...coffeeStore,
+          votes,
+        });
+      }
     }
+
+    fetchCoffeeStoreWithVotes();
   }, [fsq_id]);
 
   if (isCoffeeStoreEmpty) {
     return <div>Loading...</div>;
   }
 
-  const { name, location, img_url } = coffeeStore;
+  const { name, location, img_url, votes } = coffeeStore;
 
   const handleUpvoteButton = () => {};
 
@@ -141,7 +179,7 @@ const CoffeeStore = (props) => {
               height='24'
               alt='star-icon'
             />
-            <p className={styles.text}>1</p>
+            <p className={styles.text}>{votes}</p>
           </div>
 
           <button
