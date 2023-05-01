@@ -17,13 +17,20 @@ This is a web app that can help you find your local coffee stores based on your 
   - use `StoreContext` to store user's location and stores info
 - Customized React hooks
   - `useGetLocation` to use `navigator.geolocation` to get user location.
+- Places API
+  - [FourSquare](https://location.foursquare.com/)
+  - Setup a database with these fields: id(text), name(text), address(text), city(text), votes(number - integer), img_url(text).
+- Database
+  - [Airtable](https://airtable.com/)
 
 ## Environment Variables
 
-For this app to work, you need to configure the following environment variables in your .env.local file so please create a .env.local file in the root of this project:
+For this app to work, you need to configure the following environment variables in your .env.local file so please create a .env.local file in the root of this project.
 
 ```
 NEXT_PUBLIC_FOURSQUARE_API_KEY=<value>
+AIRTABLE_API_KEY=<value>
+AIRTABLE_BASE_ID=<value>
 ```
 
 ## Getting Started
