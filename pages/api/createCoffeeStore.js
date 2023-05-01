@@ -1,4 +1,4 @@
-import { table } from "@/lib/airtable";
+import { findRecordByFsqId, table } from "@/lib/airtable";
 
 export default async function createCoffeeStore(req, res) {
   const { fsq_id, name, address, city, img_url } = req.body;
@@ -12,14 +12,10 @@ export default async function createCoffeeStore(req, res) {
       return res.status(400).json({ error: "invalid fsq_id" });
     }
 
-    const findCoffeeStore = await table
-      .select({
-        filterByFormula: `fsq_id = "${fsq_id}"`,
-      })
-      .firstPage();
+    const findCoffeeStore = await findRecordByFsqId(fsq_id);
 
     if (findCoffeeStore.length !== 0) {
-      return res.status(200).json(findCoffeeStore[0].fields);
+      return res.status(200).json(findCoffeeStore);
     }
 
     // if (!fsq_id || !name || !address || !city) {
