@@ -64,60 +64,63 @@ const CoffeeStore = (props) => {
   const isCoffeeStoreEmpty =
     coffeeStore === undefined || Object.keys(coffeeStore).length === 0;
 
-  const handleGetCoffeeStoreVotes = async () => {
+  const handleCreateCoffeeStoreInAirtable = async (coffeeStore) => {
     try {
-      const res = await fetch("/api/createCoffeeStore", {
+      const {
+        fsq_id,
+        name,
+        img_url,
+        location: { address, locality },
+      } = coffeeStore;
+
+      const response = await fetch("/api/createCoffeeStore", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ fsq_id }),
+        body: JSON.stringify({
+          fsq_id,
+          name,
+          img_url,
+          address,
+          locality,
+        }),
       });
 
-      const data = await res.json();
-      return data.votes;
+      const dbCoffeeStore = await response.json();
+      console.log({ dbCoffeeStore });
     } catch (err) {
-      console.error(err);
+      console.error("Error creating coffee store", err);
     }
   };
 
   // csr fallback
   useEffect(() => {
-    async function fetchCoffeeStoreWithVotes() {
-      const votes = await handleGetCoffeeStoreVotes(fsq_id);
+    // staticProps does not have this store
+    if (isCoffeeStoreEmpty) {
+      const coffeeStoreFromContext = state.nearbyStores.find(
+        (store) => store.fsq_id === fsq_id
+      );
 
-      // staticProps does not have this store
-      if (isCoffeeStoreEmpty) {
-        const coffeeStoreFromContext = state.nearbyStores.find(
-          (store) => store.fsq_id === fsq_id
-        );
-
-        // if store is in context, use that
-        if (coffeeStoreFromContext) {
-          setCoffeeStore({
-            ...coffeeStoreFromContext,
-            votes,
-          });
-        }
-        // TODO: this causes bug: if store is not in context, fetch it
-        else {
-          const coffeeStoreById = await fetchCoffeeStoreById(fsq_id);
-          setCoffeeStore({
-            ...coffeeStoreById,
-            votes,
-          });
-        }
+      // if store is in context, use that
+      if (coffeeStoreFromContext) {
+        setCoffeeStore(coffeeStoreFromContext);
+        handleCreateCoffeeStoreInAirtable(coffeeStoreFromContext);
       }
-      // staticProps has this store, we can use that
-      else {
-        setCoffeeStore({
-          ...coffeeStore,
-          votes,
-        });
-      }
+      // TODO: this causes bug: if store is not in context, fetch it
+      // else {
+      //   const coffeeStoreById = await fetchCoffeeStoreById(fsq_id);
+      //   setCoffeeStore({
+      //     ...coffeeStoreById,
+      //     votes,
+      //   });
+      // }
     }
-
-    fetchCoffeeStoreWithVotes();
+    // staticProps has this store, we can use that
+    else {
+      // SSG
+      handleCreateCoffeeStoreInAirtable(props.coffeeStore);
+    }
   }, [fsq_id]);
 
   if (isCoffeeStoreEmpty) {

@@ -1,7 +1,7 @@
 import { findRecordByFsqId, table } from "@/lib/airtable";
 
 export default async function createCoffeeStore(req, res) {
-  const { fsq_id, name, address, city, img_url } = req.body;
+  const { fsq_id, name, address, locality, img_url } = req.body;
 
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -28,9 +28,9 @@ export default async function createCoffeeStore(req, res) {
           fsq_id,
           name,
           address,
-          city,
-          img_url,
+          locality,
           votes: 0,
+          img_url,
         },
       },
     ]);
