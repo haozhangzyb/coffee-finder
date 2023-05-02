@@ -6,26 +6,18 @@ const getCoffeeStoreRecordByFsqId = async (req, res) => {
 
   try {
     if (fsq_id) {
-      const records = await findRecordByFsqId(fsq_id);
+      const record = await findRecordByFsqId(fsq_id);
 
-      if (records.length !== 0) {
-        res.json(records);
+      if (Object.keys(record).length !== 0) {
+        res.json(record.fields);
       } else {
-        const {
-          name,
-          location: { address, locality },
-          img_url,
-        } = await fetchCoffeeStoreById(fsq_id);
+        const store = await fetchCoffeeStoreById(fsq_id);
 
         const createdCoffeeStore = await table.create([
           {
             fields: {
-              fsq_id,
-              name,
-              address,
-              locality,
+              ...store,
               votes: 0,
-              img_url,
             },
           },
         ]);
@@ -37,6 +29,8 @@ const getCoffeeStoreRecordByFsqId = async (req, res) => {
       res.json({ message: "Id is missing" });
     }
   } catch (error) {
+    console.log(error);
+
     res.status(500);
     res.json({ message: "Something went wrong", error });
   }

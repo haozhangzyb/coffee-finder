@@ -15,6 +15,8 @@ import {
 } from "@/lib/fetchCoffeeStores";
 import { StoreContext } from "@/contexts/StoreContext";
 import { fetcher } from "@/utils";
+import favoriteCoffeeStoreByFsqId from "../api/favoriteCoffeeStoreByFsqId";
+import axios from "axios";
 
 export async function getStaticProps({ params }) {
   const coffeeStoreData = await fetchCoffeeStores();
@@ -60,7 +62,7 @@ const CoffeeStore = (props) => {
     props.coffeeStore === undefined ||
     Object.keys(props.coffeeStore).length === 0;
 
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     `/api/getCoffeeStoreRecordByFsqId?fsq_id=${fsq_id}`,
     fetcher
   );
@@ -77,9 +79,23 @@ const CoffeeStore = (props) => {
     return <div>Loading...</div>;
   }
 
-  const handleUpvoteButton = () => {};
+  const handleUpvoteButton = async () => {
+    const newVote = data.votes + 1;
+
+    try {
+      await axios.put("/api/favoriteCoffeeStoreByFsqId", {
+        fsq_id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    mutate({ ...data, votes: newVote });
+  };
 
   if (error) {
+    console.log(error);
+
     return <div>Something went wrong retrieving coffee store page</div>;
   }
 

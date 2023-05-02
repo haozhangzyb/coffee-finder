@@ -12,7 +12,7 @@ export default async function createCoffeeStore(req, res) {
       return res.status(400).json({ error: "invalid fsq_id" });
     }
 
-    const findCoffeeStore = await findRecordByFsqId(fsq_id);
+    const { fields: findCoffeeStore } = await findRecordByFsqId(fsq_id);
 
     if (findCoffeeStore.length !== 0) {
       return res.status(200).json(findCoffeeStore);
