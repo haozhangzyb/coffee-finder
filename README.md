@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 # Coffee finder
 
-This is a web app that can help you find your local coffee stores based on your location. This app is created to demo pre-fetching feature of Next.js
+This is a web app that can help you find your local coffee stores based on your location and you can upvote them. This app is created to demo pre-fetching feature of Next.js
 
 ## Features
 
@@ -29,8 +29,8 @@ For this app to work, you need to configure the following environment variables 
 
 ```
 NEXT_PUBLIC_FOURSQUARE_API_KEY=<value>
-AIRTABLE_API_KEY=<value>
-AIRTABLE_BASE_ID=<value>
+NEXT_PUBLIC_AIRTABLE_API_KEY=<value>
+NEXT_PUBLIC_AIRTABLE_BASE_ID=<value>
 ```
 
 ## Getting Started

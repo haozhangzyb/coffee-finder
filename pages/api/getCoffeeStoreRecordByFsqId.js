@@ -29,7 +29,11 @@ const getCoffeeStoreRecordByFsqId = async (req, res) => {
       res.json({ message: "Id is missing" });
     }
   } catch (error) {
-    console.err(error);
+    // console.error(error);
+
+    if (error.response.status === 404) {
+      res.status(404).json({ message: "Not found", error });
+    }
 
     res.status(500).json({ message: "Something went wrong", error });
   }

@@ -66,6 +66,16 @@ const CoffeeStore = (props) => {
     `/api/getCoffeeStoreRecordByFsqId?fsq_id=${fsq_id}`,
     fetcher
   );
+  if (error) {
+    console.log(error);
+
+    return (
+      <div>
+        {error.status}: Something went wrong retrieving coffee store page:{" "}
+        {error.info}
+      </div>
+    );
+  }
 
   if (isPropsEmpty && !data) {
     return <div>Loading...</div>;
@@ -92,12 +102,6 @@ const CoffeeStore = (props) => {
 
     mutate({ ...data, votes: newVote });
   };
-
-  if (error) {
-    console.log(error);
-
-    return <div>Something went wrong retrieving coffee store page</div>;
-  }
 
   return (
     <div className={styles.layout}>
