@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
 import cls from "classnames";
+import useSWR from "swr";
 
 import localCoffeeStoreData from "../../data/coffee-stores.json";
 
@@ -13,6 +14,7 @@ import {
   fetchCoffeeStores,
 } from "@/lib/fetchCoffeeStores";
 import { StoreContext } from "@/contexts/StoreContext";
+import { fetcher } from "@/utils";
 
 export async function getStaticProps({ params }) {
   const coffeeStoreData = await fetchCoffeeStores();
@@ -52,84 +54,34 @@ export async function getStaticPaths() {
 
 const CoffeeStore = (props) => {
   const router = useRouter();
+  const { fsq_id } = router.query;
+
+  const isPropsEmpty =
+    props.coffeeStore === undefined ||
+    Object.keys(props.coffeeStore).length === 0;
+
+  const { data, error } = useSWR(
+    `/api/getCoffeeStoreRecordByFsqId?fsq_id=${fsq_id}`,
+    fetcher
+  );
+
+  if (isPropsEmpty && !data) {
+    return <div>Loading...</div>;
+  }
+
+  const { name, address, locality, img_url } = isPropsEmpty
+    ? data
+    : props.coffeeStore;
+
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
-  const { fsq_id } = router.query;
-
-  const { state } = useContext(StoreContext);
-
-  const [coffeeStore, setCoffeeStore] = useState(props.coffeeStore);
-
-  const isCoffeeStoreEmpty =
-    coffeeStore === undefined || Object.keys(coffeeStore).length === 0;
-
-  const handleCreateCoffeeStoreInAirtable = async (coffeeStore) => {
-    try {
-      const {
-        fsq_id,
-        name,
-        img_url,
-        location: { address, locality },
-      } = coffeeStore;
-
-      const response = await fetch("/api/createCoffeeStore", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fsq_id,
-          name,
-          img_url,
-          address,
-          locality,
-        }),
-      });
-
-      const dbCoffeeStore = await response.json();
-      console.log({ dbCoffeeStore });
-    } catch (err) {
-      console.error("Error creating coffee store", err);
-    }
-  };
-
-  // csr fallback
-  useEffect(() => {
-    // staticProps does not have this store
-    if (isCoffeeStoreEmpty) {
-      const coffeeStoreFromContext = state.nearbyStores.find(
-        (store) => store.fsq_id === fsq_id
-      );
-
-      // if store is in context, use that
-      if (coffeeStoreFromContext) {
-        setCoffeeStore(coffeeStoreFromContext);
-        handleCreateCoffeeStoreInAirtable(coffeeStoreFromContext);
-      }
-      // TODO: this causes bug: if store is not in context, fetch it
-      // else {
-      //   const coffeeStoreById = await fetchCoffeeStoreById(fsq_id);
-      //   setCoffeeStore({
-      //     ...coffeeStoreById,
-      //     votes,
-      //   });
-      // }
-    }
-    // staticProps has this store, we can use that
-    else {
-      // SSG
-      handleCreateCoffeeStoreInAirtable(props.coffeeStore);
-    }
-  }, [fsq_id]);
-
-  if (isCoffeeStoreEmpty) {
-    return <div>Loading...</div>;
-  }
-
-  const { name, location, img_url, votes } = coffeeStore;
 
   const handleUpvoteButton = () => {};
+
+  if (error) {
+    return <div>Something went wrong retrieving coffee store page</div>;
+  }
 
   return (
     <div className={styles.layout}>
@@ -152,7 +104,7 @@ const CoffeeStore = (props) => {
             width={600}
             height={360}
             className={styles.storeImg}
-            alt={name}
+            alt={name || "coffee-store"}
           />
         </div>
 
@@ -164,7 +116,7 @@ const CoffeeStore = (props) => {
               height='24'
               alt='pin-icon'
             />
-            <p className={styles.text}>{location.address}</p>
+            <p className={styles.text}>{address}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image
@@ -173,7 +125,7 @@ const CoffeeStore = (props) => {
               height='24'
               alt='navigation-icon'
             />
-            <p className={styles.text}>{location.locality}</p>
+            <p className={styles.text}>{locality}</p>
           </div>
           <div className={styles.iconWrapper}>
             <Image
@@ -182,7 +134,7 @@ const CoffeeStore = (props) => {
               height='24'
               alt='star-icon'
             />
-            <p className={styles.text}>{votes}</p>
+            <p className={styles.text}>{data ? data.votes : "loading"}</p>
           </div>
 
           <button

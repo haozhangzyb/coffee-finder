@@ -33,7 +33,7 @@ export default function Home({ coffeeStores }) {
   useEffect(() => {
     if (latitude !== "" && longitude !== "") {
       setIsNearbyStoresLoading(true);
-      fetchCoffeeStores(latitude, longitude)
+      fetchCoffeeStores(latitude, longitude, 30)
         .then((data) => {
           dispatch({
             type: ACTION_TYPES.SET_STORES,
