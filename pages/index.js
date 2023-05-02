@@ -9,6 +9,7 @@ import { fetchCoffeeStores } from "@/lib/fetchCoffeeStores";
 import useGetLocation from "@/hooks/useGetLocation";
 import { useContext, useEffect, useState } from "react";
 import { ACTION_TYPES, StoreContext } from "@/contexts/StoreContext";
+import axios from "axios";
 
 export async function getStaticProps() {
   const coffeeStores = await fetchCoffeeStores();
@@ -33,8 +34,11 @@ export default function Home({ coffeeStores }) {
   useEffect(() => {
     if (latitude !== "" && longitude !== "") {
       setIsNearbyStoresLoading(true);
-      fetchCoffeeStores(latitude, longitude, 30)
-        .then((data) => {
+      axios
+        .get(
+          `/api/getCoffeeStoresByLocation?latitude=${latitude}&longitude=${longitude}`
+        )
+        .then(({ data }) => {
           dispatch({
             type: ACTION_TYPES.SET_STORES,
             payload: {
