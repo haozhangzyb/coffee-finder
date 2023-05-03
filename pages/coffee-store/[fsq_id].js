@@ -107,6 +107,7 @@ const CoffeeStore = (props) => {
     <div className={styles.layout}>
       <Head>
         <title>{name}</title>
+        <meta name='description' content={`${name} Coffee store page`} />
       </Head>
       <div className={styles.container}>
         <div className={styles.col1}>
