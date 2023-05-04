@@ -15,13 +15,18 @@ This is a web app that can help you find your local coffee stores based on your 
     for stores near user's location, SSR will fallback and coffee store info will be fetched on the client side
 - React `context`
   - use `StoreContext` to store user's location and stores info
-- Customized React hooks
+- Custom React hooks
   - `useGetLocation` to use `navigator.geolocation` to get user location.
 - Places API
-  - [FourSquare](https://location.foursquare.com/)
-  - Setup a database with these fields: id(text), name(text), address(text), city(text), votes(number - integer), img_url(text).
+  - use [FourSquare](https://location.foursquare.com/) Places API to fetch coffee store information
 - Database
-  - [Airtable](https://airtable.com/)
+  - uses [Airtable](https://airtable.com/) as a database and has the following fields:
+    - id (text - string)
+    - name (text - string)
+    - address (text - string)
+    - city (text - string)
+    - votes (number - integer)
+    - img_url (text - string).
 
 ## Environment Variables
 
